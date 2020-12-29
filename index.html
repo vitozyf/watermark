@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<style>
+	{# body{
+		position: relative;
+	} #}
+	</style>
+</head>
+<body>
+	<div>
+	数据测试
+	</div>
+	<div>
+	数据测试
+	</div>
+	<script>
+	const wm = watermark(document.body, {
+		text: '测试文字',
+		horizontalCount: 5,
+		horizontalInterval: 0,
+		horizontalOffset: 0
+	})
+	/* wm.on('change', (mutationsList) => {
+		console.log(123, mutationsList)
+	}) */
+	</script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+$-cssPrefix: 'watermark';
+
+.#{$-cssPrefix} {
+  pointer-events: none;
+  overflow: hidden;
+}
