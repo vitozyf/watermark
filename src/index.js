@@ -48,10 +48,10 @@ class Watermark {
       right: 0,
     });
 
+    const items = [];
     for (let i = 0; i < horizontalCount; i++) {
       for (let j = 0; j < verticalCount; j++) {
         const span = h('span', `${cssPrefix}-item`);
-
         span.html(text);
         span.css({
           top: verticalInterval
@@ -69,32 +69,41 @@ class Watermark {
           height: itemHeight,
           whiteSpace: 'pre-line',
         });
-
-        this.rootEl.child(span);
+        items.push(span);
       }
     }
+    this.rootEl.children(...items);
 
     const config = {
       childList: true,
       subtree: true,
-      attributeFilter: ['style'],
+      attributes: true,
+      characterData: true,
     };
 
     const callback = function (mutationsList) {
       for (let mutation of mutationsList) {
         const removedNodes = mutation.removedNodes;
-        let isRemoveMark = false;
+        let isChangeMark = false;
         if (removedNodes.length > 0) {
           for (let i = 0; i < removedNodes.length; i++) {
             if (removedNodes[i] === rootEl.el) {
-              isRemoveMark = true;
+              isChangeMark = true;
             }
           }
         }
-        if (h(mutation.target).hasClass(`${cssPrefix}-item`)) {
-          isRemoveMark = true;
+        if (
+          mutation.target.nodeType !== 3 &&
+          h(mutation.target).hasClass(`${cssPrefix}-item`)
+        ) {
+          isChangeMark = true;
         }
-        if (mutation.target === rootEl.el || isRemoveMark) {
+        if (mutation.target.nodeType === 3) {
+          isChangeMark = true;
+          // if (!mutation.target.nodeValue || !mutation.target.nodeValue.trim()) {
+          // }
+        }
+        if (mutation.target === rootEl.el || isChangeMark) {
           if (eventMap.has('change')) {
             eventMap.get('change').call(null, mutationsList);
           } else {
@@ -104,7 +113,9 @@ class Watermark {
       }
     };
     this.observer = new MutationObserver(callback);
-    this.observer.observe(targetEl, config);
+    setTimeout(() => {
+      this.observer.observe(targetEl, config);
+    }, 0);
   }
   // event
   on(eventName, handler) {
