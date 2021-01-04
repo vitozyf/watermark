@@ -98,11 +98,15 @@ class Watermark {
         ) {
           isChangeMark = true;
         }
-        if (mutation.target.nodeType === 3) {
+        if (
+          mutation.target &&
+          mutation.target.parentNode &&
+          mutation.target.parentNode.nodeType !== 3 &&
+          h(mutation.target.parentNode).hasClass(`${cssPrefix}-item`)
+        ) {
           isChangeMark = true;
-          // if (!mutation.target.nodeValue || !mutation.target.nodeValue.trim()) {
-          // }
         }
+
         if (mutation.target === rootEl.el || isChangeMark) {
           if (eventMap.has('change')) {
             eventMap.get('change').call(null, mutationsList);
